@@ -1,0 +1,26 @@
+{
+  "api": {
+    "forecast": {
+      "factual": "Write a factual and detailed weather forecast in {language} language, describing what the weather will be like in {city} for the next 5 days. Use the following data to generate the forecast: {weather_data}. In output return header for article with newline character at the end, lead also with new line character and at the end article itself.",
+      "tabloid": "Write a tabloid weather forecast in {language} language, describing what the weather will be like in {city} for the next 5 days. Use the following data to generate the forecast: {weather_data}. In output return header for article with newline character at the end, lead also with new line character and at the end article itself.",
+      "concise": "Write a brief and clear weather forecast in {language} language, for the next 5 days in {city}. Use the following data: {weather_data}. In output return header for article with newline character at the end, lead also with new line character and at the end article itself."
+    },
+    "current": {
+      "factual": "Write a factual and detailed weather status article in {language} language, from {city}. Use the following data: {weather_data}. In output return header for article with newline character at the end, lead also with new line character and at the end article itself.",
+      "tabloid": "Write a tabloid weather status in {language} language, from{city}. Use the following data: {weather_data}. In output return header for article with newline character at the end, lead also with new line character and at the end article itself.",
+      "concise": "Write a concise weather status in {language} language, from {city}. Use the following data: {weather_data}. In output return header for article with newline character at the end, lead also with new line character and at the end article itself."
+    },
+    "historical": {
+      "factual": "Write a factual and detailed historical weather report in {language} language, describing what the weather was like in {city}. Use the following data: {weather_data}. In output return header for article with newline character at the end, lead also with new line character and at the end article itself.",
+      "tabloid": "Write a tabloid historical weather report in {language} language, describing what the weather was like in {city}. Use the following data: {weather_data}. In output return header for article with newline character at the end, lead also with new line character and at the end article itself.",
+      "concise": "Write a concise historical weather report in {language} language, describing what the weather was like in {city}. Use the following data: {weather_data}. In output return header for article with newline character at the end, lead also with new line character and at the end article itself."
+    }
+  },
+  "local": {
+    "current": {
+      "factual": "Write a factual and detailed weather status in {language} language, in {city}. Use the following data: {weather_data}",
+      "tabloid": "Write a tabloid weather status in {language} language, in {city}. Use the following data: {weather_data}",
+      "concise": "Write a concise weather status in {language} language, in {city}. Use the following data: {weather_data}"
+    }
+  }
+}

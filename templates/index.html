@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            position: relative;
+        }
+        .container input, .container select, .container button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .suggestions {
+            border: 1px solid #ddd;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            background-color: white;
+            width: 95%;
+            z-index: 10;
+        }
+        .suggestion {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+        .suggestion:hover {
+            background-color: #f1f1f1;
+        }
+        h2 {
+            text-align: center;
+        }
+        .article {
+            margin-top: 20px;
+        }
+        .article h3 {
+            color: #333;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .loading.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Weather Forecast Generator</h2>
+
+        <label for="city">Enter City</label>
+        <input type="text" id="city" placeholder="City name" autocomplete="off">
+        <div id="suggestions" class="suggestions"></div>
+
+        <label for="language">Choose Language</label>
+        <select id="language">
+            <option value="EN">English</option>
+            <option value="SK">Slovak</option>
+        </select>
+
+        <label for="style">Choose Style</label>
+        <select id="style">
+            <option value="factual">Factual</option>
+            <option value="concise">Concise</option>
+            <option value="tabloid">Tabloid</option>
+        </select>
+
+        <label for="weather-type">Choose Weather Type</label>
+        <select id="weather-type">
+            <option value="actual">Current Weather</option>
+            <option value="forecast">Weather Forecast</option>
+        </select>
+
+        <button id="local-btn">Generate with Local Model</button>
+        <button id="llm-btn">Generate with Large LLM</button>
+
+        <div class="loading" id="loading">Generating article, please wait...</div>
+
+        <div id="article" class="article">
+            <h3 id="headline"></h3>
+            <p id="lead"></p>
+            <p id="body"></p>
+        </div>
+    </div>
+
+    <script>
+        const cityInput = document.getElementById('city');
+        const suggestionsBox = document.getElementById('suggestions');
+        const loadingIndicator = document.getElementById('loading');
+        const languageSelect = document.getElementById('language');
+        const styleSelect = document.getElementById('style');
+        const weatherTypeSelect = document.getElementById('weather-type');
+
+        cityInput.addEventListener('input', async () => {
+            const query = cityInput.value;
+            if (query.length > 2) {  // Start suggesting after 3 characters
+                const response = await fetch(`/location/cities?query=${query}`);
+                const data = await response.json();
+                displaySuggestions(data.suggestions);
+            } else {
+                clearSuggestions();
+            }
+        });
+
+        function displaySuggestions(suggestions) {
+            clearSuggestions();
+            suggestions.forEach(suggestion => {
+                const div = document.createElement('div');
+                div.classList.add('suggestion');
+                div.textContent = `${suggestion.name}, ${suggestion.country}`;
+                div.addEventListener('click', () => {
+                    cityInput.value = suggestion.name;
+                    clearSuggestions();
+                });
+                suggestionsBox.appendChild(div);
+            });
+        }
+
+        function clearSuggestions() {
+            suggestionsBox.innerHTML = '';
+        }
+
+        // Function to limit options for Local Model
+        function restrictForLocalModel() {
+            // Disable forecast option and limit language and style
+            weatherTypeSelect.value = 'actual';
+            weatherTypeSelect.disabled = true;
+
+            languageSelect.value = 'EN';
+            languageSelect.disabled = true;
+
+            // Only factual and concise should be available for the local model
+            styleSelect.innerHTML = `
+                <option value="factual">Factual</option>
+                <option value="concise">Concise</option>
+            `;
+        }
+
+        // Function to restore options for LLM
+        function restoreOptionsForLLM() {
+            weatherTypeSelect.disabled = false;
+
+            languageSelect.innerHTML = `
+                <option value="EN">English</option>
+                <option value="SK">Slovak</option>
+            `;
+            languageSelect.disabled = false;
+
+            // Restore all styles
+            styleSelect.innerHTML = `
+                <option value="factual">Factual</option>
+                <option value="concise">Concise</option>
+                <option value="tabloid">Tabloid</option>
+            `;
+        }
+
+        document.getElementById('local-btn').addEventListener('click', async () => {
+            restrictForLocalModel();
+            await generateArticle('/articles/current/local');
+        });
+
+        document.getElementById('llm-btn').addEventListener('click', async () => {
+            restoreOptionsForLLM();
+            const weatherType = document.getElementById('weather-type').value;
+            const endpoint = weatherType === 'forecast' ? '/articles/forecast' : '/articles/current/replicate';
+            await generateArticle(endpoint);
+        });
+
+        async function generateArticle(endpoint) {
+            const city = document.getElementById('city').value;
+            const language = document.getElementById('language').value;
+            const style = document.getElementById('style').value;
+            const weatherType = document.getElementById('weather-type').value;
+
+            if (!city) {
+                alert('Please enter a city');
+                return;
+            }
+
+            loadingIndicator.classList.add('visible');  // Show loading indicator
+
+            try {
+                const coordinatesResponse = await fetch(`/location/coordinates?city=${city}&country=`);
+                const { lat, lon } = await coordinatesResponse.json();
+
+                const requestData = {
+                    lat: lat,
+                    lon: lon,
+                    style: style,
+                    language: language
+                };
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (response.ok) {
+                    const article = await response.json();
+                    document.getElementById('headline').textContent = article.headline;
+                    document.getElementById('lead').textContent = article.lead;
+                    document.getElementById('body').textContent = article.body;
+                } else {
+                    alert('Error generating article');
+                }
+            } catch (error) {
+                alert('Error fetching weather data');
+            } finally {
+                loadingIndicator.classList.remove('visible');  // Hide loading indicator
+            }
+        }
+    </script>
+
+</body>
+</html>
