@@ -104,6 +104,3 @@ To run the application locally:
    ```
 
 You can test the API through the FastAPI's interactive documentation or by sending HTTP requests to the listed endpoints.
-
-## License
-This project is licensed under the MIT License.
