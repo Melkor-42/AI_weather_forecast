@@ -10,8 +10,8 @@ class ModelFactory:
     @staticmethod
     async def create_model(model: str) -> BaseModel:
         logger.debug(f"Creating model: {model}")
-        if model == 'flant-t5-large':
-            return LocalModel()
+        if model == 'flan-t5-large':
+            return LocalModel(model)
         elif model == "meta/meta-llama-3.1-405b-instruct":
             return ReplicateModel(model)
         raise ValueError("Invalid LLM model")

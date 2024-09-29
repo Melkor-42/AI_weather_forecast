@@ -1,8 +1,8 @@
-fastapi==0.115.0
-httpx==0.27.2
-pydantic==2.9.2
-python-dotenv==1.0.1
+fastapi
+httpx
+Jinja2
+pydantic
+python-dotenv
 replicate==0.34.1
-starlette==0.39.1
-transformers==4.44.2
-uvicorn==0.31.0
+starlette
+uvicorn

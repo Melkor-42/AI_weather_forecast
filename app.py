@@ -60,7 +60,7 @@ async def generate_current_article_local(request: LocalArticleRequest):
     prompt = prompt_factory.generate_prompt(weather_data, request.language, request.style, type="current", model="local")
 
     try:
-        model = await ModelFactory.create_model("flant-t5-large")
+        model = await ModelFactory.create_model("flan-t5-large")
         generated_text = model.generate_text(prompt)
     except ValueError as err:
         raise HTTPException(status_code=500, detail=str(err))

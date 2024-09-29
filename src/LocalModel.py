@@ -1,11 +1,16 @@
 from src.BaseModel import BaseModel
-from transformers import T5Tokenizer, T5ForConditionalGeneration
+#from transformers import T5Tokenizer, T5ForConditionalGeneration
+import json
 
 
 class LocalModel(BaseModel):
-    def __init__(self):
-        self.tokenizer = T5Tokenizer.from_pretrained("model/flan-t5-large")
-        self.model = T5ForConditionalGeneration.from_pretrained("model/flan-t5-large")
+    def __init__(self, model):
+        with open("data/config.json", 'r') as f:
+            config = json.load(f)
+
+        self.model_path = config["local_models"][model]
+        self.tokenizer = T5Tokenizer.from_pretrained(self.model_path)
+        self.model = T5ForConditionalGeneration.from_pretrained(self.model_path)
 
     def generate_text(self, prompt: str) -> str:
         inputs = self.tokenizer(prompt, return_tensors="pt")
