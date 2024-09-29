@@ -1,5 +1,3 @@
-from datetime import datetime
-
 
 def generate_weather_data_summary(weather_data):
     weather_summary = []
@@ -8,7 +6,7 @@ def generate_weather_data_summary(weather_data):
     if "list" in weather_data:
         city = weather_data['city'].get('name', 'Unknown')
         for i, day in enumerate(weather_data["list"]):
-         if i % 8 == 0:
+         if i % 8 == 0: # if it's forecast for 5 days with 40 items in list
              days.append(weather_data['list'][i])
     else:
         city = weather_data.get('name', 'Unknown')

@@ -5,12 +5,12 @@ LABEL maintainer="michal.macej@proton.me" \
 
 RUN apk update && \
     apk add --no-cache gcc musl-dev libffi-dev && \
-    mkdir -p /app/weather_bot
+    mkdir -p /app/weather_bot && \
+    mkdir -p /app/weather_bot/logs
 
 WORKDIR /app/weather_bot
 
 COPY . .
-RUN chmod +x /app/weather_bot/start.sh
 
 RUN pip install --upgrade pip && \
     pip install -r ./requirements.txt
