@@ -1,6 +1,9 @@
 from src.BaseModel import BaseModel
 #from transformers import T5Tokenizer, T5ForConditionalGeneration
 import json
+import logging
+
+logger = logging.getLogger("LocalModel")
 
 
 class LocalModel(BaseModel):
@@ -13,10 +16,13 @@ class LocalModel(BaseModel):
         self.model = T5ForConditionalGeneration.from_pretrained(self.model_path)
 
     def generate_text(self, prompt: str) -> str:
+
+        logger.debug("tokenize prompt")
         inputs = self.tokenizer(prompt, return_tensors="pt")
         input_ids = inputs.input_ids
         # attention_mask = inputs.attention_mask
 
+        logger.info("Generate text")
         gen_tokens = self.model.generate(
             input_ids,
             do_sample=True,

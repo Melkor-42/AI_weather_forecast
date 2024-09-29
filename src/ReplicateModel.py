@@ -12,6 +12,7 @@ class ReplicateModel(BaseModel):
         self.model = replicate.models.get(model_name)
 
     async def generate_text(self, prompt: str):
+        logger.info("Generate text")
         try:
             output = await replicate.async_run(
                 self.model,
@@ -35,6 +36,7 @@ class ReplicateModel(BaseModel):
         return json_output
 
     async def __parse_weather_data(self, token_array):
+        logger.debug("Parse generated weather data")
         text = ''.join(token_array).strip()
 
         start_head = text.find('**')
