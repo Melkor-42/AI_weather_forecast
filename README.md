@@ -23,7 +23,9 @@ To run this application locally, you will need:
 - FastAPI
 - Uvicorn
 - Jinja2
-- OpenWeatherMap API credentials
+- transformers
+- pytorch
+- **OpenWeatherMap API credentials**
 
 ## Installation
 1. Clone this repository to your local machine.
