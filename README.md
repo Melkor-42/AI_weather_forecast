@@ -19,13 +19,13 @@ The generated article includes:
 
 ## Requirements
 To run this application locally, you will need:
-- Python 3.8+
+- Python 3.11
 - FastAPI
 - Uvicorn
 - Jinja2
 - transformers
 - pytorch
-- **OpenWeatherMap API credentials**
+- **OpenWeatherMap API and Replicate credentials**
 
 ## Installation
 1. Clone this repository to your local machine.
