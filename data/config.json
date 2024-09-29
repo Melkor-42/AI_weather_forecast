@@ -1,4 +1,5 @@
 {
+  "log_level": "DEBUG",
   "local_models": {
     "flan-t5-large": "model/flan-t5-large"
   }

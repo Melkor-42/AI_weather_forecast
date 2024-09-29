@@ -56,6 +56,7 @@ class OpenWeatherMap:
         response.raise_for_status()
         return response.json()
 
+    # Max cnt in free version is 40
     async def get_daily_weather_forecast(self, lat: float, lon: float, cnt: int = 40) -> Dict[str, Any]:
 
         logger.debug(f"Get daily weather forecast lat: {lat} lon: {lon}")
